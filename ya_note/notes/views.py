@@ -32,6 +32,7 @@ class NoteCreate(NoteBase, generic.CreateView):
     form_class = NoteForm
 
     def form_valid(self, form):
+        breakpoint()
         new_note = form.save(commit=False)
         new_note.author = self.request.user
         new_note.save()
