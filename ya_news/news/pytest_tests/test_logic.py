@@ -1,8 +1,7 @@
 import pytest
 from .conftest import UrlConst
 from django.urls import reverse
-from django.conf import settings
-from news.forms import CommentForm, BAD_WORDS, WARNING
+from news.forms import BAD_WORDS, WARNING
 from news.models import Comment
 from pytest_django.asserts import assertFormError, assertRedirects
 from http import HTTPStatus
@@ -45,8 +44,12 @@ def test_user_cant_use_bad_words(author_client, news, form_data):
 
 
 @pytest.mark.parametrize('parametrized_client, status, is_author',
-                         ((pytest.lazy_fixture('author_client'),HTTPStatus.FOUND, True),
-                          (pytest.lazy_fixture('not_author_client'), HTTPStatus.NOT_FOUND, False)))
+                         ((pytest.lazy_fixture('author_client'),
+                           HTTPStatus.FOUND,
+                           True),
+                          (pytest.lazy_fixture('not_author_client'),
+                           HTTPStatus.NOT_FOUND,
+                           False)))
 def test_can_delete_comment(parametrized_client,
                             status,
                             author_comment,
@@ -55,7 +58,8 @@ def test_can_delete_comment(parametrized_client,
     url = reverse(UrlConst.DELETE_COMMENT_PAGE, args=(comment.id,))
     response = parametrized_client.post(url)
     if is_author:
-        redirect_url = reverse(UrlConst.DETAIL_NEWS_PAGE, args=(news.id,)) + '#comments'
+        redirect_url = reverse(UrlConst.DETAIL_NEWS_PAGE,
+                               args=(news.id,)) + '#comments'
         assert response.status_code == status
         assertRedirects(response, redirect_url)
         assert Comment.objects.count() == 0
@@ -65,8 +69,12 @@ def test_can_delete_comment(parametrized_client,
 
 
 @pytest.mark.parametrize('parametrized_client, status, is_author',
-                         ((pytest.lazy_fixture('author_client'),HTTPStatus.FOUND, True),
-                          (pytest.lazy_fixture('not_author_client'), HTTPStatus.NOT_FOUND, False)))
+                         ((pytest.lazy_fixture('author_client'),
+                           HTTPStatus.FOUND,
+                           True),
+                          (pytest.lazy_fixture('not_author_client'),
+                           HTTPStatus.NOT_FOUND,
+                           False)))
 def test_author_can_edit_comment(parametrized_client,
                                  status,
                                  author_comment,
@@ -77,7 +85,8 @@ def test_author_can_edit_comment(parametrized_client,
     response = parametrized_client.post(url, data=form_data)
     comment.refresh_from_db()
     if is_author:
-        redirect_url = reverse(UrlConst.DETAIL_NEWS_PAGE, args=(news.id,)) + '#comments'
+        redirect_url = reverse(UrlConst.DETAIL_NEWS_PAGE,
+                               args=(news.id,)) + '#comments'
         assertRedirects(response, redirect_url)
         assert response.status_code == status
         assert comment.text == form_data['text']

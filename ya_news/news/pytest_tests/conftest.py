@@ -88,4 +88,3 @@ def comment_list():
 def author_comment(comment_list, news, author):
     comment = comment_list(author, news)[0]
     return comment, news
-
