@@ -1,10 +1,13 @@
+from http import HTTPStatus
+
 import pytest
-from .conftest import UrlConst
 from django.urls import reverse
+from pytest_django.asserts import assertFormError, assertRedirects
+
 from news.forms import BAD_WORDS, WARNING
 from news.models import Comment
-from pytest_django.asserts import assertFormError, assertRedirects
-from http import HTTPStatus
+
+from .conftest import UrlConst
 
 
 @pytest.fixture

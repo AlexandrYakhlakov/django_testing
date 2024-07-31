@@ -1,8 +1,10 @@
 from http import HTTPStatus
-from django.urls import reverse
+
 import pytest
-from .conftest import UrlConst
+from django.urls import reverse
 from pytest_django.asserts import assertRedirects
+
+from .conftest import UrlConst
 
 
 @pytest.mark.django_db

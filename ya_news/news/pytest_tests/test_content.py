@@ -1,8 +1,10 @@
 import pytest
-from .conftest import UrlConst
-from django.urls import reverse
 from django.conf import settings
+from django.urls import reverse
+
 from news.forms import CommentForm
+
+from .conftest import UrlConst
 
 
 @pytest.fixture

@@ -1,7 +1,9 @@
+from datetime import datetime, timedelta
+
 import pytest
 from django.test.client import Client
+
 from news.models import Comment, News
-from datetime import datetime, timedelta
 
 
 class UrlConst:
