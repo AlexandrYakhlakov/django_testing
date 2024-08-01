@@ -26,7 +26,7 @@ class TestNoteCreation(BaseTestCase):
 
         self.assertEqual(Note.objects.count(), 1)
 
-        note = Note.objects.get()
+        note = Note.objects.last()
         self.assertEqual(note.title, self.form_data['title'])
         self.assertEqual(note.text, self.form_data['text'])
         self.assertEqual(note.slug, self.form_data['slug'])
@@ -55,6 +55,6 @@ class TestNoteCreation(BaseTestCase):
         redirect_url = reverse(UrlsConst.NOTE_DONE)
         self.assertRedirects(response, redirect_url)
         self.assertEqual(Note.objects.count(), 1)
-        new_note = Note.objects.get()
+        new_note = Note.objects.last()
         expected_slug = slugify(self.form_data['title'])
         self.assertEqual(new_note.slug, expected_slug)
