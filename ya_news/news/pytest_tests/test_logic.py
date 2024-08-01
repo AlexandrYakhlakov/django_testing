@@ -9,40 +9,42 @@ from news.models import Comment
 from .conftest import UrlConst
 
 
-@pytest.fixture
-def form_data():
-    return {'text': 'fasdg'}
+FORM_DATA = {'text': 'fasdg'}
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize('parametrized_client, is_logged, comment_count',
-                         ((pytest.lazy_fixture('author_client'), True, 1),
-                          (pytest.lazy_fixture('client'), False, 0)))
+@pytest.mark.parametrize('parametrized_client, is_logged',
+                         ((pytest.lazy_fixture('author_client'), True),
+                          (pytest.lazy_fixture('client'), False)))
 def test_user_can_create_comment(parametrized_client,
                                  is_logged,
-                                 comment_count,
                                  news,
-                                 author,
-                                 form_data):
+                                 author):
+    comment_count_before = Comment.objects.count()
     url = reverse(UrlConst.DETAIL_NEWS_PAGE, args=(news.id,))
-    parametrized_client.post(url, data=form_data)
-    assert Comment.objects.count() == comment_count
+    parametrized_client.post(url, data=FORM_DATA)
+    comment_count_after = Comment.objects.count()
     if is_logged:
         comment = Comment.objects.get()
-        assert comment.text == form_data['text']
+        assert comment.text == FORM_DATA['text']
         assert comment.news == news
         assert comment.author == author
+        assert comment_count_after != comment_count_before
+    else:
+        assert comment_count_after == comment_count_before
 
 
-def test_user_cant_use_bad_words(author_client, news, form_data):
+def test_user_cant_use_bad_words(author_client, news):
+    comment_count_before = Comment.objects.count()
     url = reverse(UrlConst.DETAIL_NEWS_PAGE, args=(news.id,))
-    form_data['text'] = form_data['text'] + BAD_WORDS[0]
-    response = author_client.post(url, data=form_data)
+    FORM_DATA['text'] = FORM_DATA['text'] + BAD_WORDS[0]
+    response = author_client.post(url, data=FORM_DATA)
+    comment_count_after = Comment.objects.count()
     assertFormError(response,
                     form='form',
                     field='text',
                     errors=WARNING)
-    assert Comment.objects.count() == 0
+    assert comment_count_before == comment_count_after
 
 
 @pytest.mark.parametrize('parametrized_client, status, is_author',
@@ -57,17 +59,19 @@ def test_can_delete_comment(parametrized_client,
                             author_comment,
                             is_author):
     comment, news = author_comment
+    comment_count_before = Comment.objects.count()
     url = reverse(UrlConst.DELETE_COMMENT_PAGE, args=(comment.id,))
     response = parametrized_client.post(url)
+    comment_count_after = Comment.objects.count()
     if is_author:
         redirect_url = reverse(UrlConst.DETAIL_NEWS_PAGE,
                                args=(news.id,)) + '#comments'
         assert response.status_code == status
         assertRedirects(response, redirect_url)
-        assert Comment.objects.count() == 0
+        assert comment_count_before != comment_count_after
     else:
         assert response.status_code == status
-        assert Comment.objects.count() == 1
+        assert comment_count_before == comment_count_after
 
 
 @pytest.mark.parametrize('parametrized_client, status, is_author',

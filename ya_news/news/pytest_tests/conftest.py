@@ -1,9 +1,8 @@
-from datetime import datetime, timedelta
-from django.urls import reverse
-
 import pytest
-from django.test.client import Client
 from django.conf import settings
+from django.test.client import Client
+from django.urls import reverse
+from django.utils import timezone
 
 from news.models import Comment, News
 
@@ -58,11 +57,11 @@ def not_author_client(not_author, auth_client):
 def news_list():
     def _news_list(count=1):
         all_news = []
-        today = datetime.today()
+        today = timezone.now().date()
         for index in range(count):
             news = News(title=f'Новость {index}',
                         text='Просто текст',
-                        date=today - timedelta(days=index))
+                        date=today - timezone.timedelta(days=index))
             all_news.append(news)
         News.objects.bulk_create(all_news)
         return News.objects.all()
