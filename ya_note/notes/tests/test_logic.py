@@ -1,13 +1,13 @@
-from django.urls import reverse
-
-from .base_tests_settings import BaseTestCase, UrlsConst
-from notes.models import Note
-from notes.forms import WARNING
-from pytils.translit import slugify
 from http import HTTPStatus
 
+from django.urls import reverse
+from pytils.translit import slugify
 
-# TODO: написать тесты на редактирование
+from notes.forms import WARNING
+from notes.models import Note
+from .base_tests_settings import BaseTestCase, UrlsConst
+
+
 class TestNoteCreation(BaseTestCase):
     @classmethod
     def setUpTestData(cls):

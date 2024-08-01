@@ -7,30 +7,6 @@ from news.forms import CommentForm
 from .conftest import UrlConst
 
 
-@pytest.fixture
-def comment_list_for_news(comment_list,
-                          news,
-                          author,
-                          not_author):
-    news = news
-    comment_list(author, news, 5)
-    comment_list(not_author, news, 5)
-    return news, news.comment_set.all()
-
-
-@pytest.fixture
-def news_list_home(news_list):
-    return news_list(settings.NEWS_COUNT_ON_HOME_PAGE + 5)
-
-
-@pytest.fixture
-def home_page_object_list(news_list_home, client):
-    url = reverse(UrlConst.HOME_URL)
-    response = client.get(url)
-    object_list = response.context['object_list']
-    return object_list
-
-
 @pytest.mark.django_db
 def test_news_count(home_page_object_list):
     news_count = len(home_page_object_list)
