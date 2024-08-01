@@ -89,3 +89,25 @@ class TestNoteCreation(BaseTestCase):
         note_count_after = self.get_note_count()
         self.assertEqual(note_count_before, note_count_after)
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
+    def test_author_can_edit_note(self):
+        note = self.create_notes(self.author)[0]
+        url = reverse(UrlsConst.NOTE_UPDATE_URL, args=(note.slug,))
+        self.client.force_login(self.author)
+        response = self.client.post(url, self.form_data)
+        self.assertRedirects(response, reverse(UrlsConst.NOTE_DONE))
+        note.refresh_from_db()
+        self.assertEqual(note.title, self.form_data['title'])
+        self.assertEqual(note.text, self.form_data['text'])
+        self.assertEqual(note.slug, self.form_data['slug'])
+
+    def test_other_user_cant_edit_note(self):
+        note = self.create_notes(self.author)[0]
+        url = reverse(UrlsConst.NOTE_UPDATE_URL, args=(note.slug,))
+        self.client.force_login(self.auth_user)
+        response = self.client.post(url, self.form_data)
+        note_from_db = Note.objects.get(id=note.id)
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+        self.assertEqual(note.title, note_from_db.title)
+        self.assertEqual(note.text, note_from_db.text)
+        self.assertEqual(note.slug, note_from_db.slug)

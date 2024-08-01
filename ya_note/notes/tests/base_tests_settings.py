@@ -37,7 +37,8 @@ class BaseTestCase(TestCase):
                 slug=f'note-slug-{author.username}-{i}',
                 author=author)
             notes.append(note)
-        notes = Note.objects.bulk_create(notes)
+        Note.objects.bulk_create(notes)
+        notes = Note.objects.all()
         return notes
 
     @staticmethod
