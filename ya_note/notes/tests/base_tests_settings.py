@@ -20,6 +20,8 @@ class UrlsConst:
 
 
 class BaseTestCase(TestCase):
+    NOTEST_COUNT = 5
+
     @classmethod
     def setUpTestData(cls):
         cls.author = User.objects.create(username='author')

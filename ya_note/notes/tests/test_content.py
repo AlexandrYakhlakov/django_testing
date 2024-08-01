@@ -10,8 +10,8 @@ class TestContent(BaseTestCase):
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
-        cls.create_notes(cls.author, 5)
-        cls.create_notes(cls.auth_user, 5)
+        cls.create_notes(cls.author, cls.NOTEST_COUNT)
+        cls.create_notes(cls.auth_user, cls.NOTEST_COUNT)
 
     def get_data_from_response_context(self, url, key):
         response = self.client.get(url)
