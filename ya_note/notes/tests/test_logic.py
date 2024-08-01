@@ -21,9 +21,9 @@ class TestNoteCreation(BaseTestCase):
     def test_auth_user_can_create_note(self):
         note_count_before = self.get_note_count()
         redirect_url = reverse(UrlsConst.NOTE_DONE)
+        url = reverse(UrlsConst.NOTE_CREATE_URL)
         self.client.force_login(self.author)
-        response = self.client.post(UrlsConst.NOTE_CREATE_URL,
-                                    data=self.form_data)
+        response = self.client.post(url, data=self.form_data)
         self.assertRedirects(response, redirect_url)
         note = Note.objects.last()
         note_count_after = self.get_note_count()
@@ -36,10 +36,10 @@ class TestNoteCreation(BaseTestCase):
 
     def test_anonymous_user_cant_create_note(self):
         note_count_before = self.get_note_count()
-        response = self.client.post(UrlsConst.NOTE_CREATE_URL,
-                                    data=self.form_data)
+        url = reverse(UrlsConst.NOTE_CREATE_URL)
+        response = self.client.post(url, data=self.form_data)
         redirect_url = reverse(UrlsConst.LOGIN_URL)
-        expected_url = f'{redirect_url}?next={self.url}'
+        expected_url = f'{redirect_url}?next={url}'
         note_count_after = self.get_note_count()
 
         self.assertEqual(note_count_after, note_count_before)
@@ -47,10 +47,11 @@ class TestNoteCreation(BaseTestCase):
 
     def test_not_unique_slug(self):
         note = self.create_notes(self.author)[0]
+        url = reverse(UrlsConst.NOTE_CREATE_URL)
         note_count_before = self.get_note_count()
         self.form_data['slug'] = note.slug
         self.client.force_login(self.author)
-        response = self.client.post(self.url, data=self.form_data)
+        response = self.client.post(url, data=self.form_data)
         note_count_after = self.get_note_count()
 
         self.assertEqual(note_count_before, note_count_after)
@@ -59,9 +60,10 @@ class TestNoteCreation(BaseTestCase):
 
     def test_empty_slug(self):
         note_count_before = self.get_note_count()
+        url = reverse(UrlsConst.NOTE_CREATE_URL)
         self.form_data['slug'] = ''
         self.client.force_login(self.author)
-        response = self.client.post(self.url, data=self.form_data)
+        response = self.client.post(url, data=self.form_data)
         redirect_url = reverse(UrlsConst.NOTE_DONE)
         self.assertRedirects(response, redirect_url)
         new_note = Note.objects.last()
