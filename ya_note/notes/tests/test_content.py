@@ -2,7 +2,6 @@ from django.urls import reverse
 
 from notes.models import Note
 from notes.forms import NoteForm
-
 from .base_tests_settings import BaseTestCase, UrlsConst
 
 
