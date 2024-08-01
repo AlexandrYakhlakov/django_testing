@@ -17,13 +17,13 @@ class TestNoteCreation(BaseTestCase):
             'text': 'Новый текст',
             'slug': 'new-slug'
         }
-        cls.url = reverse(UrlsConst.NOTE_CREATE_URL)
 
     def test_auth_user_can_create_note(self):
         note_count_before = self.get_note_count()
         redirect_url = reverse(UrlsConst.NOTE_DONE)
         self.client.force_login(self.author)
-        response = self.client.post(self.url, data=self.form_data)
+        response = self.client.post(UrlsConst.NOTE_CREATE_URL,
+                                    data=self.form_data)
         self.assertRedirects(response, redirect_url)
         note = Note.objects.last()
         note_count_after = self.get_note_count()
@@ -36,7 +36,8 @@ class TestNoteCreation(BaseTestCase):
 
     def test_anonymous_user_cant_create_note(self):
         note_count_before = self.get_note_count()
-        response = self.client.post(self.url, data=self.form_data)
+        response = self.client.post(UrlsConst.NOTE_CREATE_URL,
+                                    data=self.form_data)
         redirect_url = reverse(UrlsConst.LOGIN_URL)
         expected_url = f'{redirect_url}?next={self.url}'
         note_count_after = self.get_note_count()
