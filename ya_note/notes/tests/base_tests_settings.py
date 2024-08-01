@@ -41,20 +41,24 @@ class BaseTestCase(TestCase):
         return notes
 
     @staticmethod
-    def assert_model_count_change(expected_change=True):
-        def wrapper(func):
-            def inner_wrapper(self, *args, **kwargs):
-                num_objects_before = Note.objects.count()
-                result = func(self, *args, **kwargs)
-                num_objects_after = Note.objects.count()
-                if expected_change:
-                    assert num_objects_after != num_objects_before, (
-                        'Количество записей в базе данных не изменилось '
-                        f'после выполнения теста {func.__name__}')
-                else:
-                    assert num_objects_after == num_objects_before, (
-                        'Количество записей в базе данных изменилось '
-                        f'после выполнения теста {func.__name__}')
-                return result
-            return inner_wrapper
-        return wrapper
+    def get_note_count():
+        return Note.objects.count()
+
+    # @staticmethod
+    # def assert_model_count_change(expected_change=True):
+    #     def wrapper(func):
+    #         def inner_wrapper(self, *args, **kwargs):
+    #             num_objects_before = Note.objects.count()
+    #             result = func(self, *args, **kwargs)
+    #             num_objects_after = Note.objects.count()
+    #             if expected_change:
+    #                 assert num_objects_after != num_objects_before, (
+    #                     'Количество записей в базе данных не изменилось '
+    #                     f'после выполнения теста {func.__name__}')
+    #             else:
+    #                 assert num_objects_after == num_objects_before, (
+    #                     'Количество записей в базе данных изменилось '
+    #                     f'после выполнения теста {func.__name__}')
+    #             return result
+    #         return inner_wrapper
+    #     return wrapper
