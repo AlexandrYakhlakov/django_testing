@@ -49,9 +49,9 @@ def test_availability_for_comment_edit_and_delete(parametrized_client,
                          ((UrlConst.EDIT_COMMENT_PAGE,
                            UrlConst.DELETE_COMMENT_PAGE)))
 def test_redirect_for_anonymous_client(url_name, client, author_comment):
-    author_comment, _ = author_comment
-    login_url = reverse('users:login')
-    url = reverse(url_name, args=(author_comment.id,))
+    comment, _ = author_comment
+    login_url = reverse(UrlConst.LOGIN_URL)
+    url = reverse(url_name, args=(comment.id,))
     expected_url = f'{login_url}?next={url}'
     response = client.get(url)
     assertRedirects(response, expected_url)
