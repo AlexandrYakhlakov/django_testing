@@ -9,7 +9,7 @@ from .conftest import UrlConst
 
 @pytest.mark.django_db
 def test_news_count(home_page_object_list):
-    news_count = len(home_page_object_list)
+    news_count = home_page_object_list.count()
     assert news_count == settings.NEWS_COUNT_ON_HOME_PAGE
 
 
